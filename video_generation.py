@@ -36,9 +36,9 @@ async def generate_video(update: Update, context: ContextTypes.DEFAULT_TYPE, pro
         task = asyncio.create_task(call_luma_api(prompt=prompt))
         countdown = config.WAIT_TIME
         message = await update.message.reply_text(f"Time remaining: {countdown} seconds.")
-        for _ in range(config.WAIT_TIME):
+        for _ in range(config.WAIT_TIME//60):
             if task.done():
-                message.delete()
+                await message.delete()
                 break
             else:
                 await asyncio.sleep(10)
