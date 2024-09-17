@@ -1,0 +1,2 @@
+# Define states
+WAITING_FOR_VIDEO_PROMPT = 0
