@@ -27,6 +27,7 @@ async def receive_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await generate_video(update, context, prompt)
     return ConversationHandler.END
 
+ERROR_MESSAGE = "VidifyAI can't generate sensitive, political, sexual, NSFW content at this time."
 
 async def generate_video(update: Update, context: ContextTypes.DEFAULT_TYPE, prompt: str) -> None:
     """Generate an video using LUMA API."""
@@ -48,8 +49,8 @@ async def generate_video(update: Update, context: ContextTypes.DEFAULT_TYPE, pro
         if status:
             await update.message.reply_video(video[0])
         else:
-            await update.message.reply_text(f"We are unable to generate a video at this moment, please try after sometime.")
+            await update.message.reply_text(ERROR_MESSAGE)
     except asyncio.TimeoutError:
         await update.message.reply_text("Video generation is taking longer than expected. Please try again later.")
     except Exception as e:
-        await update.message.reply_text(f"We are unable to generate a video at this moment, please try after sometime.")
+        await update.message.reply_text(ERROR_MESSAGE)
