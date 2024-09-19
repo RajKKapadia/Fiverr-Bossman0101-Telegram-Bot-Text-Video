@@ -26,7 +26,7 @@ def get_luma_job_id(prompt: str) -> str:
         return ""
 
 
-def retriev_luma_job_by_id(task_id: str) -> tuple[list[str], list[str], list[str], bool]:
+def retriev_luma_job_by_id(task_id: str) -> tuple[list[str], bool]:
     headers = {
         "Authorization": f"Bearer {config.LUMA_API_KEY}"
     }
@@ -54,11 +54,8 @@ def retriev_luma_job_by_id(task_id: str) -> tuple[list[str], list[str], list[str
 
 def call_luma_api(prompt: str) -> tuple[list[str], bool]:
     task_id = get_luma_job_id(prompt=prompt)
-    url = []
-    video_url = []
-    model_urls = []
     if task_id == "":
-        return url, video_url, model_urls, False
+        return [], False
     else:
         video_url, status = retriev_luma_job_by_id(
             task_id=task_id)
