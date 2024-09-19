@@ -101,7 +101,9 @@ def handle_telegram_post():
 
 @app.route("/telegram", methods=["GET"])
 def handle_telegram_get():
-    base_url = f"https://2a72-2405-201-2027-501a-54b9-8cfb-cbe5-3081.ngrok-free.app/telegram"
+    base_url = request.base_url
+    parts = base_url.split("://")[1:]
+    base_url = f"""https://{"".join(parts)}"""
     flag = set_webhook_telegram(url=base_url)
     if flag:
         return "OK", 200
