@@ -1,4 +1,3 @@
-import asyncio
 import time
 
 import requests
@@ -6,11 +5,23 @@ import requests
 import config
 
 
-def get_luma_job_id(prompt: str) -> str:
+def get_luma_job_id(prompt: str, image_url: str = "") -> str:
     try:
-        payload = {
-            "prompt": prompt
-        }
+        if image_url == "":
+            payload = {
+                "prompt": prompt
+            }
+        else:
+            payload = {
+                "prompt": prompt,
+                "keyframes": {
+                    "frame0": {
+                        "type": "image",
+                        "url": image_url
+                    }
+                }
+            }
+        print(payload)
         headers = {
             "Authorization": f"Bearer {config.LUMA_API_KEY}"
         }
@@ -38,6 +49,7 @@ def retriev_luma_job_by_id(task_id: str) -> tuple[list[str], bool]:
             f"https://api.lumalabs.ai/dream-machine/v1/generations/{task_id}",
             headers=headers,
         )
+        print(response.json())
         response.raise_for_status()
         if response.status_code == 200:
             response = response.json()
@@ -52,8 +64,19 @@ def retriev_luma_job_by_id(task_id: str) -> tuple[list[str], bool]:
     return video_url, status
 
 
-def call_luma_api(prompt: str) -> tuple[list[str], bool]:
+def call_luma_api_text_to_video(prompt: str) -> tuple[list[str], bool]:
     task_id = get_luma_job_id(prompt=prompt)
+    if task_id == "":
+        return [], False
+    else:
+        video_url, status = retriev_luma_job_by_id(
+            task_id=task_id)
+        return video_url, status
+
+
+def call_luma_api_image_to_video(prompt: str, image_url: str) -> tuple[list[str], bool]:
+    task_id = get_luma_job_id(prompt=prompt, image_url=image_url)
+    print(task_id)
     if task_id == "":
         return [], False
     else:
